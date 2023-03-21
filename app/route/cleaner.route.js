@@ -39,6 +39,8 @@ router.post("/", validate(cleanerValidator.add), cleaner.create)
       });
 
     router.post('/cleaner-by-csv',uploadNew.single("file"), cleaner.insertCleanersByCSV )
+    router.get("/list-task",  cleaner.listTaks)
+
 
 
 

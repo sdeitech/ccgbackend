@@ -1,9 +1,9 @@
 const router = require("express").Router()
 const { validate } = require('../middlewares/validate')
 const cleanerValidator = require('../validator/cleaner.validator')
-const cleaner = require('../controller/')
+const cleaner = require('../controller/cleaner/cleaner.controller')
 const multer = require('multer')
-const {} = require('../middlewares/multer')
+
 
 // router.post("/", validate(cleanerValidator.add), cleaner.create)
 //     .get("/list", cleaner.cleanerList)
@@ -14,6 +14,8 @@ const {} = require('../middlewares/multer')
 //     .get("/:cleanerId", cleaner.findById)
 
     router.post("/list",  cleaner.createNewTask)
+    router.get("/list-task",  cleaner.listTaks)
+
 
 
 
