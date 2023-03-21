@@ -36,6 +36,8 @@ exports.create = (req, res) => {
                     console.log(e)
                     return res.send(error(CONSTANTS.SQL_ERROR))
                 })
+
+          
             }
         }).catch((e) => {
             console.log(e)
@@ -57,7 +59,7 @@ exports.findAll = async (req, res) => {
        
         // LIKE QUERY
         if(!!param.search){
-            let colObj= ['hashcode','client_id', 'name', 'phone_no', 'contact_name', 'contact_email', 'contact_phone_no', 'website', 'source_id', 'comments']
+            let colObj= ['hashcode','client_id', 'name', 'phone_no', 'contact_name', 'is_active','contact_email', 'contact_phone_no', 'website', 'source_id', 'comments']
             let whereLikeObj = await common.getLikeObj(colObj, param.search)
 
         if(whereLikeObj.length > 0)
@@ -67,6 +69,10 @@ exports.findAll = async (req, res) => {
         //  CUSTOM SEARCH
         if(param.industry_id > 0 ){
             where.push({ industry_id: param.industry_id})
+        }
+
+        if(param.is_active > 0 ){
+            where.push({ is_active: param.is_active})
         }
 
         // ORDER BY

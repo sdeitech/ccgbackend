@@ -2,6 +2,10 @@ const { success, error} = require('../../utils/restResponse')
 const CONSTANTS = require("../../assets/constants")
 const SETTINGS = require("../../assets/setting")
 
+const fs = require('fs');
+const csv = require('csv-parser');
+
+
 const db = require('../../config/db.config')
 const sequelize = db.sequelize
 const Op = db.Sequelize.Op   
@@ -338,3 +342,40 @@ exports.leadList = (req, res) => {
 
 //?? to ask
 //
+
+
+exports.importLeadFromCSV = async(req, res)=>{
+    try{
+        if(!req.file){
+            return res.json({
+                status: "Failed",
+          messageID: 400,
+          message: "Source File is not uploaded",
+        
+            })
+        }
+    fs.createReadStream(req.file.path)
+     .pipe(csv())
+     .on('data', (data) => {
+    Lead.create(data);
+     })
+     .on('end', () => {
+    return res.json({
+        status: "Success",
+        messageID: 200,
+        message: "File Imported and registered",
+    })
+
+  });
+
+    }catch(err){
+        console.log(err)
+        return res.json({
+            status: "Failed",
+      messageID: 400,
+      message: "Source File is not uploaded",
+      err:err
+    
+        })
+    }
+}

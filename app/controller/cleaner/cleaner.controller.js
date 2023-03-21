@@ -3,6 +3,9 @@ const common = require('../common.controller')
 const CONSTANTS = require("../../assets/constants")
 const SETTINGS = require("../../assets/setting")
 const fileUpload = require('../fileUpload.controller').upload
+const csv = require('csv-parser');
+
+
 
 const db = require('../../config/db.config')
 const sequelize = db.sequelize
@@ -10,6 +13,7 @@ const Op = db.Sequelize.Op
 const Cleaner = db.cleaner
 const Lead = db.lead
 const Staff = db.staff
+const Task = db.task
 const fs = require('fs')
 
 exports.create = (req, res) => {
@@ -382,8 +386,7 @@ exports.cleanerList = (req, res) => {
 //?? to ask
 //
 
-const csv = require('csv-parser');
-exports.insertCleanersByCSV = (req, res)=>{
+exports.insertCleanersByCSV = async(req, res)=>{
     try{
         if(!req.file){
             return res.json({
@@ -416,3 +419,99 @@ fs.createReadStream(req.file.path)
         })
     }
 }
+
+
+
+exports.createNewTask = async(req, res) =>{
+    try{
+        let parameters = req.body
+        console.log("checking",parameters )
+
+      let Created_task =   await Task.create({
+            task_name: parameters.task_name,
+            start_date: parameters.start_date,
+            end_date: parameters.end_date,
+            task_status: parameters.task_status,
+            assign_to: parameters.assign_to,
+            task_description: parameters.task_description,
+            
+        })
+
+        if(Created_task){
+            return res.send(success('Task created successfully!'))
+        }else{
+            return res.send(error(CONSTANTS.SQL_ERROR))
+        }
+
+
+
+
+    }catch(err){
+        console.log(err)
+        return res.send(error(CONSTANTS.SERVER_ERROR))
+
+    }
+}
+
+// exports.create = (req, res) => {
+//     let param = req.body
+
+
+    
+//     try {
+//         Cleaner.count({ where: { 'email': param.email, deleted_on : null} }).then(async(isEmailExists) => {
+//             if (isEmailExists > 0) {
+//                 return res.send(error('Email already used!'))
+//             } else {
+//                 if(!!param.contract_file){
+//                     param.contract_file = await fileUpload(param.contract_file, '', 'cleaner_contract_file')
+//                     if(param.contract_file.valid){
+//                         param.contract_file = param.contract_file.url
+//                     } else {
+//                         console.log(param.contract_file.error)
+//                         res.send(error(CONSTANTS.SERVER_ERROR))
+//                     }
+//                 }
+//                 if(!!param.insurance_file){
+//                     param.insurance_file = await fileUpload(param.insurance_file, '', 'cleaner_insurance_file')
+//                     if(param.insurance_file.valid){
+//                         param.insurance_file = param.insurance_file.url
+//                     } else {
+//                         console.log(param.insurance_file.error)
+//                         res.send(error(CONSTANTS.SERVER_ERROR))
+//                     }
+//                 }
+//                 Cleaner.create({
+//                     name: param.name,
+//                     phone_no: param.phone_no,
+//                     email: param.email,
+//                     contract_url: param.contract_file,
+//                     insurance_url: param.insurance_file,
+//                     insurance_expiry_date: param.insurance_expiry_date,
+//                     email_alert: param.email_alert,
+//                     address: param.address,
+//                     suburb: param.suburb,
+//                     postal_code: param.postal_code,
+//                     emergency_contact_name: param.emergency_contact_name,
+//                     emergency_phone_no: param.emergency_phone_no,
+//                     notes: param.notes,
+//                     travel_distance: param.travel_distance,
+//                     is_active: param.is_active,
+//                     created_by: req.master_id,
+//                 }).then(() => {
+//                     return res.send(success('Cleaner created successfully!'))
+//                 }).catch((e) => {
+//                     console.log(e)
+//                     return res.send(error(CONSTANTS.SQL_ERROR))
+//                 })       
+//             }
+//         }).catch((e) => {
+//             console.log(e)
+//             return res.send(error(CONSTANTS.SQL_ERROR))
+//         })
+//     } catch (e) {
+//         console.log(e)
+//         return res.send(error(CONSTANTS.SERVER_ERROR))
+//     }
+// }
+

@@ -67,6 +67,36 @@ exports.generatePassword = async (strPassword = "") => {
     }
     return strPassword
 }
+exports.generatePassword2 = async (firstName, lastName) =>
+{
+    const date = new Date();
+    const month = date.getMonth() + 1; // Adding 1 since getMonth() returns 0-indexed values
+    const year = date.getFullYear().toString().slice(-2); // Taking last 2 digits of the year
+    
+    // Concatenating parts of the name with month and year, and adding random characters
+    const password = firstName.slice(0, 2) + lastName.slice(0, 2) + month + year + getRandomChars(2);
+    
+    return password;
+  }
+
+
+  function getRandomChars(num) {
+    const chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_+~`|}{[]\:;?><,./-=";
+    let randomChars = "";
+    
+    for (let i = 0; i < num; i++) {
+      const randomIndex = Math.floor(Math.random() * chars.length);
+      randomChars += chars[randomIndex];
+    }
+    
+    return randomChars;
+  }
+
+
+
+
+
+
 
 exports.generateOTP = async () => {
 

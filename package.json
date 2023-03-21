@@ -16,6 +16,7 @@
     "aws-sdk": "^2.1036.0",
     "bcrypt": "^5.0.1",
     "cors": "^2.8.5",
+    "csv-parser": "^3.0.0",
     "dotenv": "^16.0.1",
     "express": "^4.17.1",
     "express-validator": "^6.10.0",

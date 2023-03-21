@@ -16,8 +16,8 @@ let mailModel = {
                 rejectUnauthorized:false
             },
             auth: {
-                user: env.senderEmail,
-                pass: env.senderEmailPassword
+                user: env.freshEmail,
+                pass: env.emailPassword
             }
         });
 
