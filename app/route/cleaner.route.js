@@ -30,7 +30,7 @@ router.post("/", validate(cleanerValidator.add), cleaner.create)
         }),
       
         fileFilter(req, file, cb) {
-          if (!file.originalname.match(/\.(csv|xlsx|ods)$/)) {
+          if (!file.originalname.match(/\.(csv)$/)) {
             return cb(new Error("Please Upload Image Only"));
           }
       

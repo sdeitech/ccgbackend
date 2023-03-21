@@ -33,6 +33,9 @@ exports.create = (req, res) => {
                         res.send(error(CONSTANTS.SERVER_ERROR))
                     }
                 }
+
+                console.log(param.insurance_file, "param.insurance_file")
+
                 if(!!param.insurance_file){
                     param.insurance_file = await fileUpload(param.insurance_file, '', 'cleaner_insurance_file')
                     if(param.insurance_file.valid){
