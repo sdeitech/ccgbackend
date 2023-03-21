@@ -55,6 +55,13 @@ let server = app.listen(env.PORT, '0.0.0.0', function() {
     console.log("App listening at http://%s:%s", host, port)
 });
 
+
+let data = 'i am tanay'
+
+console.log(data.split('').reverse().join(''), "6666666666666666666666666666666666")
+
+
+
 // module.exports = app;
 
 //?? to check

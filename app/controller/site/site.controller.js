@@ -18,6 +18,7 @@ exports.create = async (req, res) => {
     let param = req.body
     try {
     console.log('on try')
+    console.log("param.site_contract ", param );
 
         param.client = await common.findExists(Client, param.client)
         console.log(param.client)
@@ -92,6 +93,7 @@ exports.create = async (req, res) => {
         
     } catch (e) {
         console.log(e)
+        console.log("pradeep")
         return res.send(error(CONSTANTS.SERVER_ERROR))
     }
 }

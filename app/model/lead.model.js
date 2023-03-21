@@ -183,7 +183,7 @@ module.exports = (sequelize, Sequelize) => {
     }, {
         hooks: {
             beforeCreate: async (lead) => {
-                lead.hashcode = await md5(new Date().getTime());
+                lead.hashcode = await md5(new Date().getTime() + '-' + randomInt(1, 1000000));
             }
         },
         paranoid: true,
@@ -195,3 +195,8 @@ module.exports = (sequelize, Sequelize) => {
 
     return Lead;
 }
+
+const randomInt = (min, max) => {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+    
+  };

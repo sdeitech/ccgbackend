@@ -9,6 +9,7 @@ const db = require('../../config/db.config')
 const sequelize = db.sequelize
 const Op = db.Sequelize.Op
 const Staff = db.staff
+const {sendEmailNode} = require('../../utils/sendEmail')
 
 exports.create = (req, res) => {
     let param = req.body
@@ -19,7 +20,7 @@ exports.create = (req, res) => {
                 return res.send(error('Email already used!'))
             } else {
                 let password = CONSTANTS.staff_password 
-                password = await common.generatePassword()
+                password = await common.generatePassword2(param.first_name, param.last_name)
                 Staff.create({
                     fname: param.first_name,
                     lname: param.last_name,
@@ -31,8 +32,12 @@ exports.create = (req, res) => {
                     password: password,
                     is_active: param.is_active,
                     created_by: req.master_id
-                }). then  (staff => {
-
+                }). then (staff => {
+                    let mailSubject = "CCG Regisatration Mail Notification"
+                    let emailBody = `Thanks for the registering with you credentials are - Email : ${param.email} and Password : ${password}`
+                    let sendEmailData =  sendEmailNode(param.email,mailSubject,emailBody)
+                    console.log(sendEmailData,"sendEmailData");
+                    console.log("infopradeep")
 
                     return res.send(success('Staff created successfully!', { password }))
                 }).catch((e) => {
