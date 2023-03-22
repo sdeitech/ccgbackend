@@ -445,10 +445,7 @@ exports.createNewTask = async(req, res) =>{
         }else{
             return res.send(error(CONSTANTS.SQL_ERROR))
         }
-
-
-
-
+        
     }catch(err){
         console.log(err)
         return res.send(error(CONSTANTS.SERVER_ERROR))
