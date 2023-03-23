@@ -1,6 +1,3 @@
-
-
-
 const db = require('../../config/db.config')
 const sequelize = db.sequelize
 const Op = db.Sequelize.Op   
@@ -14,8 +11,6 @@ const CONSTANTS = require("../../assets/constants");
 exports.create_consumable = async (req, res) => {
 try{
     let params = req.body
-
-
     Consumable.create({
         item_name: params.item_name,
         quoted_price: params.quoted_price,
@@ -37,14 +32,9 @@ try{
         console.log(e);
         return res.send(error(CONSTANTS.SQL_ERROR));
       });
-
-      
-    
-
 }
 catch(err){
 console.log(err)
 }
-
 
 }
