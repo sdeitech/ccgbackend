@@ -1,5 +1,7 @@
 const authRoute=require('./auth.route')
 const staffRoute=require('./staff.route')
+const consumableRoute=require('./consumable.route')
+
 const cleanerRoute=require('./cleaner.route')
 const leadRoute=require('./lead.route')
 const clientRoute=require('./client.route')
@@ -16,6 +18,8 @@ module.exports = function (app) {
     app.use(jwt);
 
     app.use("/api/staff",staffRoute)
+    app.use("/api/consumable",consumableRoute)
+
     app.use("/api/cleaner",cleanerRoute)
     app.use("/api/lead",leadRoute)
     app.use("/api/client",clientRoute)
