@@ -13,13 +13,9 @@ router.post("/", validate(cleanerValidator.add), cleaner.create)
     .post("/status/:cleanerId", validate(cleanerValidator.updateStatus), cleaner.updateStatus)
     .get("/all", cleaner.findAll)
     .get("/:cleanerId", cleaner.findById)
-<<<<<<< HEAD
- 
-=======
     .post("/create",  cleaner.createNewTask)
     
 
->>>>>>> 040c851c196552110f5db7103053992b8122afb6
 
 
     let uploadNew = multer({
