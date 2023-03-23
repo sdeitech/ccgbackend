@@ -39,14 +39,8 @@ catch(err){
 console.log(err)
 }
 
-<<<<<<< HEAD
-}
-=======
 
 }
-
-
-
 exports.create_consumable = async (req, res) => {
   try{
       let params = req.body
@@ -208,4 +202,3 @@ exports.create_consumable = async (req, res) => {
       return res.send(error(CONSTANTS.SERVER_ERROR));
     }
   };
->>>>>>> 305880e02c059c9a5832c3d499227af287427adb

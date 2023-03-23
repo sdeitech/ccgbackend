@@ -109,12 +109,12 @@ module.exports = (sequelize, Sequelize) => {
           
         },
 
-        is_deleted:{
-            type:Sequelize.BOOLEAN,
-            notEmpty : false,
-            defaultValue: false
+        // is_deleted:{
+        //     type:Sequelize.BOOLEAN,
+        //     notEmpty : false,
+        //     defaultValue: false
 
-        },
+        // },
 
 
         created_by : {
