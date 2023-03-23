@@ -109,6 +109,14 @@ module.exports = (sequelize, Sequelize) => {
           
         },
 
+        is_deleted:{
+            type:Sequelize.BOOLEAN,
+            notEmpty : false,
+            defaultValue: false
+
+        },
+
+
         created_by : {
             type: Sequelize.INTEGER,
             allowNull: true,
@@ -122,7 +130,7 @@ module.exports = (sequelize, Sequelize) => {
         deleted_by : {
             type: Sequelize.INTEGER,
             allowNull: true,
-            defaultValue: null
+            defaultValue: false
         },
         deleted_on: {
             type: Sequelize.DATE,
