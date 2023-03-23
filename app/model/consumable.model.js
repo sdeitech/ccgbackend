@@ -2,7 +2,7 @@ const md5 = require('md5')
 const moment = require('moment')
 
 module.exports = (sequelize, Sequelize) => {
-    const Task = sequelize.define('task', {
+    const Comsumable = sequelize.define('consumable', {
         id: {
             type: Sequelize.INTEGER,
             autoIncrement: true,
@@ -23,61 +23,123 @@ module.exports = (sequelize, Sequelize) => {
 
 
 
-        task_name: {
+        item_name: {
             type: Sequelize.STRING,
             notEmpty: true,
             validate: {
                 notEmpty: {
-                    msg: "Task name is required!"
+                    msg: "Item name is required!"
                 }
             }
         },   
         
-        start_date:{
-            type: Sequelize.DATE,
+        quoted_price:{
+            type: Sequelize.INTEGER,
             validate: {
                 notEmpty: {
-                    msg: "Start date is required"
+                    msg: "Quoted price is required"
                 }
             }
         },
-        end_date:{
-            type: Sequelize.DATE,
+        supplier_price:{
+            type: Sequelize.INTEGER,
             validate: {
                 notEmpty: {
-                    msg: "End date is required"
+                    msg: "Supplier price is required"
                 }
             }
         },
 
-        // task_status:{
-        //     type    :Sequelize.BOOLEAN,
-        //     defaultValue:false
-
-        // },
-        task_status: {
-            type: Sequelize.TINYINT,
+       
+        margin_amount: {
+            type: Sequelize.INTEGER,
             allowNull: false,
             defaultValue: 1
         },
 
-        assign_to: {
+        profit_amount: {
+            type: Sequelize.INTEGER,
+            notEmpty : true,
+            allowNull: false,
+            
+            // validate: {
+            //     notEmpty: {
+            //         msg: "Client ID is required!"
+            //     }
+            // },  
+        },
+
+        supplier: {
             type: Sequelize.STRING,
             notEmpty : true,
             allowNull: false,
             
             validate: {
                 notEmpty: {
-                    msg: "Client ID is required!"
+                    msg: "Supplier is required!"
                 }
             },  
         },
 
-        task_description:{
+        client_name: {
+            type: Sequelize.STRING,
+            notEmpty : true,
+            allowNull: false,
+            
+            validate: {
+                notEmpty: {
+                    msg: "Client Name is required!"
+                }
+            },  
+        },
+
+        cleaner_name: {
+            type: Sequelize.STRING,
+            notEmpty : true,
+            allowNull: false,
+            
+            validate: {
+                notEmpty: {
+                    msg: "Cleaner Name is required!"
+                }
+            },  
+        },
+
+        quantity: {
+            type: Sequelize.INTEGER,
+            notEmpty : true,
+            allowNull: false,
+            
+            // validate: {
+            //     notEmpty: {
+            //         msg: "Client ID is required!"
+            //     }
+            // },  
+        },
+
+        date_stock_order:{
+            type: Sequelize.DATE,
+            validate: {
+                notEmpty: {
+                    msg: "Date is required"
+                }
+            }
+        },
+
+        date_stock_received:{
+            type: Sequelize.DATE,
+            validate: {
+                notEmpty: {
+                    msg: "Date is required"
+                }
+            }
+        },
+
+        invoice_status:{
             type    :Sequelize.STRING,
             validate: {
                 notEmpty: {
-                    msg: "Description is required"
+                    msg: "Invoice Status is required"
                 }
             }
 
@@ -136,5 +198,5 @@ module.exports = (sequelize, Sequelize) => {
         deletedAt: "deleted_on"
     })
 
-    return Task
+    return Comsumable
 }

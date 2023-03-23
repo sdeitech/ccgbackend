@@ -6,12 +6,15 @@ const multer = require('multer')
 const {} = require('../middlewares/multer')
 
 router.post("/", validate(cleanerValidator.add), cleaner.create)
+    .get('/all-task',cleaner.findList)
     .get("/list", cleaner.cleanerList)
     .put("/:cleanerId", validate(cleanerValidator.update), cleaner.update)
     .delete("/:cleanerId", cleaner.delete)
     .post("/status/:cleanerId", validate(cleanerValidator.updateStatus), cleaner.updateStatus)
     .get("/all", cleaner.findAll)
     .get("/:cleanerId", cleaner.findById)
+    .post("/create",  cleaner.createNewTask)
+    
 
 
 
@@ -30,15 +33,21 @@ router.post("/", validate(cleanerValidator.add), cleaner.create)
         }),
       
         fileFilter(req, file, cb) {
-          if (!file.originalname.match(/\.(csv|xlsx|ods)$/)) {
+          if (!file.originalname.match(/\.(csv)$/)) {
             return cb(new Error("Please Upload Image Only"));
           }
       
           cb(null, true);
         },
       });
+     
 
     router.post('/cleaner-by-csv',uploadNew.single("file"), cleaner.insertCleanersByCSV )
+
+
+    
+
+    
 
 
 

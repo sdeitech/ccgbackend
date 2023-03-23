@@ -15,7 +15,6 @@ const mailTemplate = {
             resolve(data);
         });
     },
-   
 };
 
 module.exports = mailTemplate;

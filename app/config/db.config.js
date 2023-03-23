@@ -11,7 +11,7 @@ const sequelize = new Sequelize(env.DB_NAME, env.DB_USER, env.DB_PASS, {
         idle: 10000
     },
     dialect: "mysql",
-    logging: true
+    logging: false
 })
 
 const db = {}
@@ -31,6 +31,8 @@ db.lead = require('../model/lead.model.js')(sequelize, Sequelize)
 db.cleaner = require('../model/cleaner.model.js')(sequelize, Sequelize)
 db.client = require('../model/client.model.js')(sequelize, Sequelize)
 db.task = require('../model/task.model')(sequelize, Sequelize)
+db.consumable = require('../model/consumable.model')(sequelize, Sequelize)
+
 
 db.site = require('../model/site/site.model.js')(sequelize, Sequelize)
 db.siteCleanerMaster = require('../model/site/site_cleaner_master.model')(sequelize, Sequelize)

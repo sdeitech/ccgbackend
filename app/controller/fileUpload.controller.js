@@ -9,7 +9,7 @@ exports.upload = async(image_url, old_image_url, folderName = '') => {
             valid: false,
             url: ''
         }
-        let allowedExtensions = ['jpg', 'png', 'pdf', 'jpeg']
+        let allowedExtensions = ['jpg', 'png', 'pdf', 'jpeg', 'csv']
         let decodedImg = common.decodeBase64Image(image_url)
         const rename = await generateName(25)
         let ext = decodedImg.ext
