@@ -6,13 +6,14 @@ const multer = require('multer')
 const {} = require('../middlewares/multer')
 
 router.post("/", validate(cleanerValidator.add), cleaner.create)
+    .get('/all-task',cleaner.findList)
     .get("/list", cleaner.cleanerList)
     .put("/:cleanerId", validate(cleanerValidator.update), cleaner.update)
     .delete("/:cleanerId", cleaner.delete)
     .post("/status/:cleanerId", validate(cleanerValidator.updateStatus), cleaner.updateStatus)
     .get("/all", cleaner.findAll)
     .get("/:cleanerId", cleaner.findById)
-
+ 
 
 
     let uploadNew = multer({
@@ -37,8 +38,13 @@ router.post("/", validate(cleanerValidator.add), cleaner.create)
           cb(null, true);
         },
       });
+     
 
     router.post('/cleaner-by-csv',uploadNew.single("file"), cleaner.insertCleanersByCSV )
+
+
+    
+
     
 
 

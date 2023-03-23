@@ -13,6 +13,7 @@ const Lead = db.lead;
 const Staff = db.staff;
 const Task = db.task;
 const fs = require("fs");
+const { task } = require("../../config/db.config");
 
 exports.create = (req, res) => {
   let param = req.body;
@@ -537,6 +538,7 @@ exports.updateStatus = (req, res) => {
 
 exports.cleanerList = (req, res) => {
   try {
+    console.log("cleaner list")
     Cleaner.findAll({
       attributes: ["hashcode", "name"],
       where: { is_active: 1 },
@@ -625,174 +627,127 @@ exports.createNewTask = async (req, res) => {
 };
 
 
-
-
-
-exports.listTaks = async (req, res) => {
+exports.findList = async (req, res) => {
+  try {  
     let param = req.query;
-    console.log(req.query, 'params')
-  
-    try {
-      let datetime_format = CONSTANTS.DATE_SQL;
-      let orderByField = "created_date";
-      let orderBy = "DESC";
-      let where = [];
-  
-      // LIKE QUERY
-      if (!!param.search) {
-        let colObj = [
-          "name",
-          "phone_no",
-          "email",
-          "insurance_expiry_date",
-          "address",
-          "suburb",
-          "postal_code",
-          "emergency_contact_name",
-          "emergency_phone_no",
-          "notes",
-          "travel_distance",
-        ];
-        let whereLikeObj = await common.getLikeObj(colObj, param.search);
-        if (whereLikeObj.length > 0) where.push({ [Op.or]: whereLikeObj });
-      }
-  
-      // ORDER BY
-      if (!!param.sort) {
-        orderByField = param.sort;
-        orderBy = param.order || "desc";
-      }
-  
-      let response = {};
-      let limit = CONSTANTS.PER_PAGE;
-      param.page = parseInt(param.page) || 1;
-      let offset =
-        param.page == 1
-          ? 0
-          : parseInt(param.page) * parseInt(CONSTANTS.PER_PAGE) - 10;
-  
-      let totalRecords = await Cleaner.count({
-        col: "id",
-        // where : where
-      });
-      if (totalRecords > 0) {
-        Cleaner.findAll({
-          attributes: [
-            "hashcode",
-            "name",
-            "phone_no",
-            "email",
-            "contract_url",
-            "insurance_url",
-            "email_alert",
-            "address",
-            "suburb",
-            "postal_code",
-            "emergency_contact_name",
-            "emergency_phone_no",
-            "notes",
-            "job_id",
-            "travel_distance",
-            "is_active",
-            [
-              sequelize.fn(
-                "date_format",
-                sequelize.col("cleaner.insurance_expiry_date"),
-                datetime_format
-              ),
-              "insurance_expiry_date",
-            ],
-            [
-              sequelize.fn(
-                "date_format",
-                sequelize.col("cleaner.created_on"),
-                datetime_format
-              ),
-              "created_date",
-            ],
-            [
-              sequelize.fn(
-                "date_format",
-                sequelize.col("cleaner.updated_on"),
-                datetime_format
-              ),
-              "updated_date",
-            ],
-            [
-              sequelize.fn(
-                "CONCAT",
-                sequelize.col("s.fname"),
-                " ",
-                sequelize.col("s.lname")
-              ),
-              "created_by",
-            ],
-            [
-              sequelize.fn(
-                "CONCAT",
-                sequelize.col("s1.fname"),
-                " ",
-                sequelize.col("s1.lname")
-              ),
-              "updated_by",
-            ],
-          ],
-          include: [
-            {
-              model: Lead,
-              attributes: [
-                [sequelize.fn("IFNULL", sequelize.col("lead.id"), ""), "id"],
-                [
-                  sequelize.fn("IFNULL", sequelize.col("lead.hashcode"), ""),
-                  "hashcode",
-                ],
-                [
-                  sequelize.fn("IFNULL", sequelize.col("lead.client_name"), ""),
-                  "client_name",
-                ],
-              ],
-            },
-            {
-              model: Staff,
-              as: "s",
-              attributes: ["fname", "lname"],
-            },
-            {
-              model: Staff,
-              as: "s1",
-              attributes: ["fname", "lname"],
-            },
-          ],
-          order: [[sequelize.col(orderByField), orderBy]],
-          where: where,
-          offset: offset,
-          limit: limit,
-          raw: true,
-        })
-          .then((cleaner) => {
-            response.totalRecords = totalRecords;
-            response.recordsPerPage = limit;
-            response.recordsFilterd = cleaner.length;
-  
-            cleaner.forEach((value) => {
-              value.job_id = "";
-            });
-            response.data = cleaner;
-  
-            return res.send(success("Cleaner Lists!", response));
-          })
-          .catch((e) => {
-            console.log(e);
-            return res.send(error(CONSTANTS.SQL_ERROR));
-          });
-      } else {
-        response.totalRecords = 0;
-        response.recordsPerPage = limit;
-        response.data = [];
-        return res.send(success("Cleaner Lists!", response));
-      }
-    } catch (e) {
-      console.log(e);
-      return res.send(error(CONSTANTS.SERVER_ERROR));
+    let datetime_format = CONSTANTS.DATE_SQL;
+    let orderByField = "task_name";
+    let orderBy = "DESC";
+    let where = [];
+
+    // LIKE QUERY
+    if (!!param.search) {
+      let colObj = [
+        "task_name",
+        "start_date",
+        "end_date",
+        "task_status",
+        "assign_to",
+        "task_description",
+        
+      ];
+      let whereLikeObj = await common.getLikeObj(colObj, param.search);
+      if (whereLikeObj.length > 0) where.push({ [Op.or]: whereLikeObj });
     }
+
+
+    if(param.task_name > 0 ){
+      where.push({ task_name: param.task_name})
+  }
+
+    // ORDER BY
+    if (!!param.sort) {
+      orderByField = param.sort;
+      orderBy = param.order || "desc";
+    }
+
+    let response = {};
+    let limit = CONSTANTS.PER_PAGE;
+    param.page = parseInt(param.page) || 1;
+    let offset =
+      param.page == 1
+        ? 0
+        : parseInt(param.page) * parseInt(CONSTANTS.PER_PAGE) - 10;
+
+    let totalRecords = await Task.count({
+      col: "id",
+      // where : where
+    });
+    if (totalRecords > 0) {
+      Task.findAll({
+        attributes: [
+          "task_name",
+          "start_date",
+          "end_date",
+          "task_status",
+          "assign_to",
+          "task_description",
+          // [
+          //   sequelize.fn(
+          //     "date_format",
+          //     sequelize.col("task.start_date"),
+          //     datetime_format
+          //   ),
+          //   "start_date",
+          // ],
+          // [
+          //   sequelize.fn(
+          //     "date_format",
+          //     sequelize.col("task.end_date"),
+          //     datetime_format
+          //   ),
+          //   "end_date",
+          // ],
+          
+          
+          
+        ],
+        // include: [
+        //   {
+        //     model: Task,
+        //     attributes: [
+        //       [sequelize.fn("IFNULL", sequelize.col("task.id"), ""), "id"],
+              
+              
+        //     ],
+        //   },
+          
+         
+        // ],
+        order: [[sequelize.col(orderByField), orderBy]],
+        where: where,
+        offset: offset,
+        limit: limit,
+        raw: true,
+      })
+        .then((cleaner) => {
+          response.totalRecords = totalRecords;
+          response.recordsPerPage = limit;
+          response.recordsFilterd = cleaner.length;
+
+          cleaner.forEach((value) => {
+            value.job_id = "";cleaner
+          });
+          response.data = cleaner;
+
+          return res.send(success("Task Lists!", response));
+        })
+        .catch((e) => {
+          console.log(e);
+          return res.send(error(CONSTANTS.SQL_ERROR));
+        });
+    } else {
+      response.totalRecords = 0;
+      response.recordsPerPage = limit;
+      response.data = [];
+      return res.send(success("Task Lists!", response));
+    }
+  } catch (e) {
+    console.log(e);
+    return res.send(error(CONSTANTS.SERVER_ERROR));
+  }
   };
+
+
+
+
