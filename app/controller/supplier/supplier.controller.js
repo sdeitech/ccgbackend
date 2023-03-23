@@ -1,26 +1,189 @@
-
-
-
-const db = require('../../config/db.config')
-const sequelize = db.sequelize
-const Op = db.Sequelize.Op   
-const common = require('../common.controller')
-const Lead = db.lead
-const Supplier = db.supplier
-const SETTINGS = require("../../assets/setting")
+const db = require("../../config/db.config");
+const sequelize = db.sequelize;
+const Op = db.Sequelize.Op;
+const common = require("../common.controller");
+const Lead = db.lead;
+const Supplier = db.supplier;
+const SETTINGS = require("../../assets/setting");
 const { success, error } = require("../../utils/restResponse");
 
 const CONSTANTS = require("../../assets/constants");
 
-exports.create_supplier= async (req, res) => {
-try{
-    let params = req.body
+exports.create_supplier = async (req, res) => {
+  try {
+    let params = req.body;
 
-    Supplier.count({ where: { 'email': params.email, deleted_on : null} }).then(async (emailCount) => {
+    Supplier.count({ where: { email: params.email, deleted_on: null } })
+      .then(async (emailCount) => {
         if (emailCount > 0) {
-            return res.send(error('Email already used!'))
-        } else{
-            Supplier.create({
+          return res.send(error("Email already used!"));
+        } else {
+          Supplier.create({
+            supplier_name: params.supplier_name,
+            contact_name: params.contact_name,
+            phone_number: params.phone_number,
+            email: params.email,
+            street_address: params.street_address,
+            suburb: params.suburb,
+            postal_code: params.postal_code,
+            notes: params.notes,
+            created_by: req.master_id,
+          })
+            .then(() => {
+              return res.send(success("Supplier created successfully!"));
+            })
+            .catch((e) => {
+              console.log(e);
+              return res.send(error(CONSTANTS.SQL_ERROR));
+            });
+        }
+      })
+      .catch((e) => {
+        console.log(e);
+        return res.send(error(CONSTANTS.SQL_ERROR));
+      });
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+exports.findAllSupplier = async (req, res) => {
+  let param = req.query;
+  try {
+    let datetime_format = CONSTANTS.DATE_SQL;
+    let orderByField = "contact_name";
+    let orderBy = "DESC";
+    const isActive = param.is_active || 1;
+
+    let where = [{is_deleted:0}];
+
+    // LIKE QUERY
+    if (!!param.search) {
+      let colObj = [
+        "supplier_name",
+        "contact_name",
+        "phone_number",
+        "email",
+        "street_address",
+        "suburb",
+        "postal_code",
+        "notes",
+        "is_deleted"
+      ];
+      let whereLikeObj = await common.getLikeObj(colObj, param.search);
+
+      if (whereLikeObj.length > 0) where.push({ [Op.or]: whereLikeObj });
+    }
+
+    //  CUSTOM SEARCH
+    if (param.email > 0) {
+      where.push({ email: param.email });
+    }
+
+    if (param.supplier_name > 0) {
+      where.push({ supplier_name: param.supplier_name });
+    }
+
+    // ORDER BY
+    if (!!param.sort) {
+      orderByField = param.sort;
+      orderBy = param.order || "desc";
+    }
+
+    let response = {};
+    let limit = CONSTANTS.PER_PAGE;
+    param.page = parseInt(param.page) || 1;
+    let offset =
+      param.page == 1
+        ? 0
+        : parseInt(param.page) * parseInt(CONSTANTS.PER_PAGE) - 10;
+
+    let totalRecords = await Supplier.count({
+      col: "id",
+      // where : where
+    });
+    if (totalRecords > 0) {
+      Supplier.findAll({
+        attributes: [
+          "supplier_name",
+          "contact_name",
+          "phone_number",
+          "email",
+          "street_address",
+          "suburb",
+          "postal_code",
+          "notes",
+          "is_deleted"
+        ],
+        // [sequelize.fn('date_format', sequelize.col('client.created_on'), datetime_format), 'created_date'],
+        // [sequelize.fn('date_format', sequelize.col('client.updated_on'), datetime_format), 'updated_date'],
+        // [sequelize.fn('CONCAT', sequelize.col('s.fname'),' ' ,sequelize.col('s.lname')), 'created_by'],
+        // [sequelize.fn('CONCAT', sequelize.col('s1.fname'),' ' ,sequelize.col('s1.lname')), 'updated_by']
+        // ],,
+        // include: [
+        //     {
+        //         model: Staff,
+        //         as: 's',
+        //         attributes: ['fname','lname']
+        //     },
+        //     {
+        //         model: Staff,
+        //         as: 's1',
+        //         attributes: ['fname','lname']
+        //     }
+        // ],
+        order: [[sequelize.col(orderByField), orderBy]],
+        where: where,
+        offset: offset,
+        limit: limit,
+        raw: true,
+      })
+        .then((client) => {
+          response.totalRecords = totalRecords;
+          response.recordsPerPage = limit;
+          response.recordsFilterd = client.length;
+
+          client.forEach((value) => {
+            value.job_id = SETTINGS.jobs[value.job_id] || client.job_id;
+          });
+          response.data = client;
+
+          return res.send(success("Supplier Lists!", response));
+        })
+        .catch((e) => {
+          console.log(e);
+          return res.send(error(CONSTANTS.SQL_ERROR));
+        });
+    } else {
+      response.totalRecords = 0;
+      response.recordsPerPage = limit;
+      response.data = [];
+      return res.send(success("Supplier Lists!", response));
+    }
+  } catch (e) {
+    console.log(e);
+    return res.send(error(CONSTANTS.SERVER_ERROR));
+  }
+};
+
+exports.update_supplier = (req, res) => {
+  let params = req.body;
+  const id = req.query.id;
+  try {
+    Supplier.count({ where: { id: id } }).then((isClientExists) => {
+      if (isClientExists > 0) {
+        Supplier.count({
+          where: {
+            email: params.email,
+            deleted_on: null,
+            [Op.not]: { id: id },
+          },
+        }).then(async (emailCount) => {
+          if (emailCount > 0) {
+            return res.send(error("Email already used!"));
+          } else {
+            Supplier.update(
+              {
                 supplier_name: params.supplier_name,
                 contact_name: params.contact_name,
                 phone_number: params.phone_number,
@@ -30,128 +193,74 @@ try{
                 postal_code: params.postal_code,
                 notes: params.notes,
                 created_by: req.master_id,
-               
-              }).then(() => {
-                return res.send(success("Supplier created successfully!"));
+              },
+              {
+                where: { id: id },
+              }
+            )
+              .then(() => {
+                return res.send(success("Client updated successfully!"));
               })
               .catch((e) => {
                 console.log(e);
                 return res.send(error(CONSTANTS.SQL_ERROR));
               });
-        
-        }
- 
-    }).catch((e) => {
-        console.log(e)
-        return res.send(error(CONSTANTS.SQL_ERROR))
-    })
-    
-
-}
-catch(err){
-console.log(err)
-}
+          }
+        });
+      } else {
+        return res.send(error("Client data not found!"));
+      }
+    });
+  } catch (e) {
+    console.log(e);
+    return res.send(error(CONSTANTS.SERVER_ERROR));
+  }
+};
 
 
-}
 
-
-exports.findAllSupplier = async (req, res)=>{
-    let param = req.query
+exports.delete_supplier = (req, res) => {
+    let params = req.body;
+    const id = req.query.id;
+   
+  
     try {
-        let datetime_format = CONSTANTS.DATE_SQL
-        let orderByField = "contact_name"
-        let orderBy = "DESC"
-        const isActive = param.is_active || 1
-        let where = [];
-       
-        // LIKE QUERY
-        if(!!param.search){
-            let colObj= ['supplier_name','contact_name', 'phone_number', 'email', 'street_address', 'suburb','postal_code', 'notes']
-            let whereLikeObj = await common.getLikeObj(colObj, param.search)
-
-        if(whereLikeObj.length > 0)
-            where.push({[Op.or]: whereLikeObj})
-        }
-
-        //  CUSTOM SEARCH
-        if(param.email > 0 ){
-            where.push({ email: param.email})
-        }
-        
-        if(param.supplier_name > 0 ){
-            where.push({ supplier_name: param.supplier_name})
-        }
-           
-        
-
-        // ORDER BY
-        if(!!param.sort){
-            orderByField= param.sort
-            orderBy= param.order || 'desc'
-        }
-
-        let response = {}
-        let limit = CONSTANTS.PER_PAGE;
-        param.page = parseInt(param.page) || 1;
-        let offset = (param.page==1) ? 0 : (parseInt(param.page)*parseInt(CONSTANTS.PER_PAGE))-10
-
-       let totalRecords =  await Supplier.count({
-                col: 'id',
-                // where : where
-            });
-            if (totalRecords > 0) {
-                Supplier.findAll({ attributes : ['supplier_name','contact_name', 'phone_number', 'email', 'street_address', 'suburb','postal_code', 'notes']
-                    // [sequelize.fn('date_format', sequelize.col('client.created_on'), datetime_format), 'created_date'],
-                    // [sequelize.fn('date_format', sequelize.col('client.updated_on'), datetime_format), 'updated_date'],
-                    // [sequelize.fn('CONCAT', sequelize.col('s.fname'),' ' ,sequelize.col('s.lname')), 'created_by'],
-                    // [sequelize.fn('CONCAT', sequelize.col('s1.fname'),' ' ,sequelize.col('s1.lname')), 'updated_by']
-                // ],,
-                ,
-                // include: [
-                //     {
-                //         model: Staff,
-                //         as: 's',
-                //         attributes: ['fname','lname']
-                //     },
-                //     {
-                //         model: Staff,
-                //         as: 's1',
-                //         attributes: ['fname','lname']
-                //     }
-                // ],
-                order: [[sequelize.col(orderByField), orderBy]],
-                where: where,
-                offset:offset, 
-                limit: limit,
-                raw : true
-                }
-
-                ).then(client => {
-                    response.totalRecords = totalRecords
-                    response.recordsPerPage = limit
-                    response.recordsFilterd = client.length
-
-                    client.forEach( ( value ) =>{
-                        value.job_id = SETTINGS.jobs[value.job_id] || client.job_id 
-                    })
-                    response.data = client
-
-                    return res.send(success("Supplier Lists!",response))
-                }).catch((e) => {
-                    console.log(e)
-                    return res.send(error(CONSTANTS.SQL_ERROR))
-                })
+      Supplier.count({ where: { id: id } }).then((isClientExists) => {
+        if (isClientExists > 0) {
+          Supplier.count({
+            where: {
+              email: params.email,
+              deleted_on: null,
+              [Op.not]: { id: id },
+            },
+          }).then(async (emailCount) => {
+            if (emailCount > 0) {
+              return res.send(error("Email already used!"));
             } else {
-                response.totalRecords = 0
-                response.recordsPerPage = limit
-                response.data = []
-                return res.send(success("Supplier Lists!",response))
+              Supplier.update(
+                {
+                  is_deleted:true
+                },
+                {
+                  where: { id: id },
+                }
+              )
+                .then(() => {
+                  return res.send(success("Client deleted successfully!"));
+                })
+                .catch((e) => {
+                  console.log(e);
+                  return res.send(error(CONSTANTS.SQL_ERROR));
+                });
             }
-        
+          });
+        } else {
+          return res.send(error("Client data not found!"));
+        }
+      });
     } catch (e) {
-        console.log(e)
-        return res.send(error(CONSTANTS.SERVER_ERROR))
+      console.log(e);
+      return res.send(error(CONSTANTS.SERVER_ERROR));
     }
-
-}
+  };
+  
