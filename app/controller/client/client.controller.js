@@ -55,6 +55,7 @@ exports.findAll = async (req, res) => {
         let datetime_format = CONSTANTS.DATE_SQL
         let orderByField = "created_date"
         let orderBy = "DESC"
+        const isActive = param.is_active || 1
         let where = [];
        
         // LIKE QUERY
@@ -71,9 +72,8 @@ exports.findAll = async (req, res) => {
             where.push({ industry_id: param.industry_id})
         }
 
-        if(param.is_active > 0 ){
-            where.push({ is_active: param.is_active})
-        }
+            where.push({ is_active: isActive})
+        
 
         // ORDER BY
         if(!!param.sort){

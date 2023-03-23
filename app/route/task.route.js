@@ -13,7 +13,7 @@ const multer = require('multer')
 //     .get("/all", cleaner.findAll)
 //     .get("/:cleanerId", cleaner.findById)
 
-    router.post("/list",  cleaner.createNewTask)
+    router.post("/create",  cleaner.createNewTask)
 
 
 

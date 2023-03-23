@@ -50,10 +50,15 @@ module.exports = (sequelize, Sequelize) => {
             }
         },
 
-        task_status:{
-            type    :Sequelize.BOOLEAN,
-            defaultValue:false
+        // task_status:{
+        //     type    :Sequelize.BOOLEAN,
+        //     defaultValue:false
 
+        // },
+        task_status: {
+            type: Sequelize.TINYINT,
+            allowNull: false,
+            defaultValue: 1
         },
 
         assign_to: {
