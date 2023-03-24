@@ -122,6 +122,7 @@ exports.findAllSupplier = async (req, res) => {
           "deleted_by"
           
           
+          
 
         ],
         // [sequelize.fn('date_format', sequelize.col('client.created_on'), datetime_format), 'created_date']
