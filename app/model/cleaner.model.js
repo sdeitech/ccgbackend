@@ -148,7 +148,7 @@ module.exports = (sequelize, Sequelize) => {
                 }
             },
         },
-        is_active: {
+        task_status: {
             type: Sequelize.TINYINT,
             allowNull: false,
             defaultValue: 1
