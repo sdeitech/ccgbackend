@@ -125,11 +125,17 @@ exports.findAllSupplier = async (req, res) => {
           "updated_by",
           "updated_on",
           "deleted_on",
-          "deleted_by"
+          "deleted_by",
+          [sequelize.fn('DATE_FORMAT', sequelize.col('created_on'), datetime_format), 'created_on'],
+          [sequelize.fn('DATE_FORMAT', sequelize.col('updated_by'), datetime_format), 'updated_by'],
+          [sequelize.fn('DATE_FORMAT', sequelize.col('updated_on'), datetime_format), 'updated_on'],
+          [sequelize.fn('DATE_FORMAT', sequelize.col('deleted_on'), datetime_format), 'deleted_on'],
+          [sequelize.fn('DATE_FORMAT', sequelize.col('deleted_by'), datetime_format), 'deleted_by'],
+        ],
           
           
 
-        ],
+        
         // [sequelize.fn('date_format', sequelize.col('client.created_on'), datetime_format), 'created_date'],
         // [sequelize.fn('date_format', sequelize.col('client.updated_on'), datetime_format), 'updated_date'],
         // [sequelize.fn('CONCAT', sequelize.col('s.fname'),' ' ,sequelize.col('s.lname')), 'created_by'],
