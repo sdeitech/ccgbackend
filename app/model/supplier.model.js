@@ -105,17 +105,14 @@ module.exports = (sequelize, Sequelize) => {
             type: Sequelize.STRING,
             notEmpty : false,
             allowNull: true,
-            
-          
         },
 
-        // is_deleted:{
-        //     type:Sequelize.BOOLEAN,
-        //     notEmpty : false,
-        //     defaultValue: false
+        is_deleted:{
+            type:Sequelize.BOOLEAN,
+            notEmpty : false,
+            defaultValue: false
 
-        // },
-
+        },
 
         created_by : {
             type: Sequelize.INTEGER,

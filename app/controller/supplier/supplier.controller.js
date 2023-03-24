@@ -115,9 +115,9 @@ exports.findAllSupplier = async (req, res) => {
           "notes",
           "is_deleted"
         ],
-        // [sequelize.fn('date_format', sequelize.col('client.created_on'), datetime_format), 'created_date'],
-        // [sequelize.fn('date_format', sequelize.col('client.updated_on'), datetime_format), 'updated_date'],
-        // [sequelize.fn('CONCAT', sequelize.col('s.fname'),' ' ,sequelize.col('s.lname')), 'created_by'],
+        // [sequelize.fn('date_format', sequelize.col('client.created_on'), datetime_format), 'created_date']
+        // [sequelize.fn('date_format', sequelize.col('client.updated_on'), datetime_format), 'updated_date']
+        // [sequelize.fn('CONCAT', sequelize.col('s.fname'),' ' ,sequelize.col('s.lname')), 'created_by']
         // [sequelize.fn('CONCAT', sequelize.col('s1.fname'),' ' ,sequelize.col('s1.lname')), 'updated_by']
         // ],,
         // include: [
