@@ -6,6 +6,7 @@ const multer = require('multer')
 
 
 router.post("/add-consumable", consumable.create_consumable)
-      .get("/all", consumable.findAll)
+router.get('/get-all-consumable', consumable.findAllConsumable)
+   
 
 module.exports=router;
