@@ -113,7 +113,16 @@ exports.findAllSupplier = async (req, res) => {
           "suburb",
           "postal_code",
           "notes",
-          "is_deleted"
+          "is_deleted",
+          "created_on",
+          "created_by",
+          "updated_by",
+          "updated_on",
+          "deleted_on",
+          "deleted_by"
+          
+          
+
         ],
         // [sequelize.fn('date_format', sequelize.col('client.created_on'), datetime_format), 'created_date']
         // [sequelize.fn('date_format', sequelize.col('client.updated_on'), datetime_format), 'updated_date']
