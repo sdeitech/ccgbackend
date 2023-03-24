@@ -60,6 +60,7 @@ exports.findAllSupplier = async (req, res) => {
     // LIKE QUERY
     if (!!param.search) {
       let colObj = [
+        "_id",
         "supplier_name",
         "contact_name",
         "phone_number",
@@ -111,6 +112,7 @@ exports.findAllSupplier = async (req, res) => {
     if (totalRecords > 0) {
       Supplier.findAll({
         attributes: [
+            "id",
           "supplier_name",
           "contact_name",
           "phone_number",
