@@ -68,7 +68,13 @@ exports.findAllSupplier = async (req, res) => {
         "suburb",
         "postal_code",
         "notes",
-        "is_deleted"
+        "is_deleted",
+        "created_by",
+        "updated_by",
+        "deleted_by",
+        "deleted_on",
+        "created_on"
+
       ];
       let whereLikeObj = await common.getLikeObj(colObj, param.search);
 
