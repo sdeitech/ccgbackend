@@ -6,6 +6,8 @@ const multer = require('multer')
 const {} = require('../middlewares/multer')
 
 router.post("/", validate(cleanerValidator.add), cleaner.create)
+.get("/task-list",cleaner.TaskList)
+
     .get('/all-task',cleaner.findList)
     .get("/list", cleaner.cleanerList)
     .put("/:cleanerId", validate(cleanerValidator.update), cleaner.update)
@@ -14,12 +16,6 @@ router.post("/", validate(cleanerValidator.add), cleaner.create)
     .get("/all", cleaner.findAll)
     .get("/:cleanerId", cleaner.findById)
     .post("/create",  cleaner.createNewTask)
-    // .get("/task-list",cleaner.TaskList)
-
-    
-    
-
-
 
     let uploadNew = multer({
         storage: multer.diskStorage({
