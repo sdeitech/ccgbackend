@@ -13,6 +13,8 @@ const CONSTANTS = require("../../assets/constants");
 exports.create_consumable = async (req, res) => {
 try{
     let params = req.body
+  console.log(params,"params")
+
     Consumable.create({
         item_name: params.item_name,
         quoted_price: params.quoted_price,
