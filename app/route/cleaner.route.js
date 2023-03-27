@@ -14,7 +14,7 @@ router.post("/", validate(cleanerValidator.add), cleaner.create)
     .get("/all", cleaner.findAll)
     .get("/:cleanerId", cleaner.findById)
     .post("/create",  cleaner.createNewTask)
-    .get("/task-list",cleaner.TaskList)
+    // .get("/task-list",cleaner.TaskList)
 
     
     
