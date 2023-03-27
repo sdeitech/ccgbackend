@@ -243,16 +243,16 @@ exports.update_supplier = (req, res) => {
 
 
 exports.delete_supplier = (req, res) => {
-    let params = req.body;
+    // let params = req.body;
     const id = req.query.id;
-   
+   const email = req.query.email
   
     try {
       Supplier.count({ where: { id: id } }).then((isClientExists) => {
         if (isClientExists > 0) {
           Supplier.count({
             where: {
-              email: params.email,
+              email: email,
               deleted_on: null,
               [Op.not]: { id: id },
             },
@@ -293,7 +293,7 @@ exports.delete_supplier = (req, res) => {
 
 
   exports.getSupplierById = (req, res) => {
-    let id = req.query.id  
+    let id = req.params.supplierId  
     console.log(id, "adas")
 
     try {
@@ -343,3 +343,4 @@ exports.delete_supplier = (req, res) => {
         return res.send(error(CONSTANTS.SERVER_ERROR))
     }
 }
+
