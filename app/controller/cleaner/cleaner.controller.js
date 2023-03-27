@@ -629,18 +629,23 @@ exports.createNewTask = async (req, res) => {
 
 exports.findList = async (req, res) => {
   try {
-    const { page = 1, search = '', task_name = '', sort = 'task_name', order = 'DESC' } = req.query;
+    console.log(req.query, 'asdada')
+    const { page = 1, search = '', task_name = '', sort = 'task_name', order = 'DESC', task_status} = req.query;
     const limit = CONSTANTS.PER_PAGE;
     const offset = (page - 1) * limit;
 
     const where = {};
     if (search) {
       const colObj = ['task_name', 'start_date', 'end_date', 'task_status', 'assign_to', 'task_description'];
+      console.log(colObj, "colObj")
       const whereLikeObj = await common.getLikeObj(colObj, search);
       if (whereLikeObj.length > 0) where[Op.or] = whereLikeObj;
     }
     if (task_name) {
       where.task_name = task_name;
+    }
+    if (task_status) {
+      where.task_status = task_status;
     }
 
     const totalRecords = await Task.count({ where });
