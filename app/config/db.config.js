@@ -33,6 +33,7 @@ db.client = require('../model/client.model.js')(sequelize, Sequelize)
 db.task = require('../model/task.model')(sequelize, Sequelize)
 db.consumable = require('../model/consumable.model')(sequelize, Sequelize)
 db.supplier = require('../model/supplier.model')(sequelize, Sequelize)
+db.job=require('../model/job.model')(sequelize, Sequelize)
 
 
 
@@ -42,6 +43,7 @@ db.siteCleanerMaster = require('../model/site/site_cleaner_master.model')(sequel
 db.country = require('../model/common/country.model.js')(sequelize, Sequelize)
 db.state = require('../model/common/state.model.js')(sequelize, Sequelize)
 db.city = require('../model/common/city.model.js')(sequelize, Sequelize)
+
 
 // lead relationships
 

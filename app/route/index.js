@@ -10,6 +10,7 @@ const clientRoute=require('./client.route')
 const siteRoute=require('./site.route')
 const userRoute=require('./user.route')
 const commonRoute=require('./common.route')
+const jobRoute=require('./job.route')
 const { jwt, errorHandler } = require('../utils/jwt');
 
 module.exports = function (app) {
@@ -30,4 +31,5 @@ module.exports = function (app) {
     app.use("/api/site",siteRoute)
     app.use("/api/user",userRoute)
     app.use("/api",commonRoute)
+    app.use("/api/job",jobRoute)
 };

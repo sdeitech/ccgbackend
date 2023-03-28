@@ -13,7 +13,4 @@ router.get("/supplier-by-id/:supplierId", supplier.getSupplierById)
 
 
 
-
-   
-
 module.exports=router;
