@@ -14,6 +14,8 @@ const multer = require('multer')
 //     .get("/:cleanerId", cleaner.findById)
 
     router.post("/add-work",  work.createNewWork)
+    router.get("/work-by-id",  work.getAllWorkById)
+
 
 
 
