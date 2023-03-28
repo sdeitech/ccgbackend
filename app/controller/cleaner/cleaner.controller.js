@@ -136,6 +136,7 @@ exports.findAll = async (req, res) => {
     if (totalRecords > 0) {
       Cleaner.findAll({
         attributes: [
+          "id",
           "hashcode",
           "name",
           "phone_no",
