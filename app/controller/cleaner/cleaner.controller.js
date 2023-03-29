@@ -14,7 +14,6 @@ const Staff = db.staff;
 const Task = db.task;
 const fs = require("fs");
 
-
 exports.create = (req, res) => {
   let param = req.body;
 
@@ -539,9 +538,9 @@ exports.updateStatus = (req, res) => {
 
 exports.cleanerList = (req, res) => {
   try {
-    console.log("cleaner list")
+    console.log("cleaner list");
     Cleaner.findAll({
-      attributes: ["hashcode", "name"],
+      attributes: ["hashcode", "name", "id"],
       where: { is_active: 1 },
     })
       .then((cleanerList) => {
@@ -604,6 +603,11 @@ exports.insertCleanersByCSV = async (req, res) => {
 exports.createNewTask = async (req, res) => {
   try {
     let parameters = req.body;
+    let infoCleaner = await Cleaner.findAll({
+      attributes: ["name", "id"],
+      where: { id: parameters.assign_to },
+    });
+    let assingneeNameInfo = infoCleaner[0].dataValues.name;
 
     if (parameters) {
       let Created_task = await Task.create({
@@ -613,6 +617,7 @@ exports.createNewTask = async (req, res) => {
         task_status: parameters.task_status,
         assign_to: parameters.assign_to,
         task_description: parameters.task_description,
+        assignee_name: assingneeNameInfo,
       });
 
       if (Created_task) {
@@ -627,19 +632,30 @@ exports.createNewTask = async (req, res) => {
   }
 };
 
-
 exports.findList = async (req, res) => {
-  
   try {
-
-    const { page = 1, search = '', task_name = '', sort = 'task_name', order = 'DESC', task_status} = req.query;
+    const {
+      page = 1,
+      search = "",
+      task_name = "",
+      sort = "task_name",
+      order = "DESC",
+      task_status,
+    } = req.query;
     const limit = CONSTANTS.PER_PAGE;
     const offset = (page - 1) * limit;
 
     const where = {};
     if (search) {
-      const colObj = ['task_name', 'start_date', 'end_date', 'task_status', 'assign_to', 'task_description'];
-      console.log(colObj, "colObj")
+      const colObj = [
+        "task_name",
+        "start_date",
+        "end_date",
+        "task_status",
+        "assign_to",
+        "task_description",
+      ];
+      console.log(colObj, "colObj");
       const whereLikeObj = await common.getLikeObj(colObj, search);
       if (whereLikeObj.length > 0) where[Op.or] = whereLikeObj;
     }
@@ -652,7 +668,15 @@ exports.findList = async (req, res) => {
 
     const totalRecords = await Task.count({ where });
     const tasks = await Task.findAll({
-      attributes: ['task_name', 'start_date', 'end_date', 'task_status', 'assign_to', 'task_description'],
+      attributes: [
+        "task_name",
+        "start_date",
+        "end_date",
+        "task_status",
+        "assign_to",
+        "task_description",
+        "assignee_name",
+      ],
       order: [[sort, order]],
       where,
       offset,
@@ -666,7 +690,7 @@ exports.findList = async (req, res) => {
       recordsFiltered: tasks.length,
       data: tasks,
     };
-    return res.send(success('Task Lists!', response));
+    return res.send(success("Task Lists!", response));
   } catch (e) {
     console.log(e);
     return res.send(error(CONSTANTS.SERVER_ERROR));
@@ -675,96 +699,45 @@ exports.findList = async (req, res) => {
 
 exports.TaskList = (req, res) => {
   try {
-      Task.findAll({ 
-          attributes: ['id','task_name'],
-          where : { task_status: 1 }
-      }).then(clientList => {
-          res.send(success("Client List!", clientList))
-      }).catch(e => {
-          console.log(e)
-          return res.send(error(CONSTANTS.SQL_ERROR))
+    Task.findAll({
+      attributes: ["id", "task_name"],
+      where: { task_status: 1 },
+    })
+      .then((clientList) => {
+        res.send(success("Client List!", clientList));
       })
+      .catch((e) => {
+        console.log(e);
+        return res.send(error(CONSTANTS.SQL_ERROR));
+      });
   } catch (e) {
-      console.log(e)
-      return res.send(error(CONSTANTS.SERVER_ERROR))
+    console.log(e);
+    return res.send(error(CONSTANTS.SERVER_ERROR));
   }
-}
-// exports.findAll = async (req, res) => {
-//   let param = req.query
-//   try {
-//       let datetime_format = CONSTANTS.DATE_SQL
-//       let orderByField = "task_name"
-//       let orderBy = "DESC"
-//       const isActive = param.is_active || 1
-//       let where = [];
-     
-//       // LIKE QUERY
-//       if(!!param.search){
-//           let colObj= ['task_name', 'start_date', 'end_date', 'task_status', 'assign_to', 'task_description']
-//           let whereLikeObj = await common.getLikeObj(colObj, param.search)
+};
 
-//       if(whereLikeObj.length > 0)
-//           where.push({[Op.or]: whereLikeObj})
-//       }
-
-//       //  CUSTOM SEARCH
-//       if(param.industry_id > 0 ){
-//           where.push({ industry_id: param.industry_id})
-//       }
-
-//           where.push({ is_active: isActive})
-      
-
-//       // ORDER BY
-//       if(!!param.sort){
-//           orderByField= param.sort
-//           orderBy= param.order || 'desc'
-//       }
-
-//       let response = {}
-//       let limit = CONSTANTS.PER_PAGE;
-//       param.page = parseInt(param.page) || 1;
-//       let offset = (param.page==1) ? 0 : (parseInt(param.page)*parseInt(CONSTANTS.PER_PAGE))-10
-
-//      let totalRecords =  await Task.count({
-//               col: 'id',
-//               // where : where
-//           });
-//           if (totalRecords > 0) {
-//                   Task.findAll({ attributes : ['task_name', 'start_date', 'end_date', 'task_status', 'assign_to', 'task_description'],
-              
-//               order: [[sequelize.col(orderByField), orderBy]],
-//               where: where,
-//               offset:offset, 
-//               limit: limit,
-//               raw : true
-//               }
-
-//               ).then(client => {
-//                   response.totalRecords = totalRecords
-//                   response.recordsPerPage = limit
-//                   response.recordsFilterd = client.length
-
-//                   client.forEach( ( value ) =>{
-//                       value.job_id = SETTINGS.jobs[value.job_id] || client.job_id 
-//                   })
-//                   response.data = client
-
-//                   return res.send(success("Client Lists!",response))
-//               }).catch((e) => {
-//                   console.log(e)
-//                   return res.send(error(CONSTANTS.SQL_ERROR))
-//               })
-//           } else {
-//               response.totalRecords = 0
-//               response.recordsPerPage = limit
-//               response.data = []
-//               return res.send(success("Client Lists!",response))
-//           }
-      
-//   } catch (e) {
-//       console.log(e)
-//       return res.send(error(CONSTANTS.SERVER_ERROR))
-//   }
-// }
-
+exports.TaskListByClearId = (req, res) => {
+  try {
+    Task.findAll({
+      attributes: [
+        "id",
+        "task_name",
+        "start_date",
+        "end_date",
+        "task_status",
+        "task_description",
+      ],
+      where: { task_status: 1, assign_to: req.query.assign_to },
+    })
+      .then((clientList) => {
+        res.send(success("Client List!", clientList));
+      })
+      .catch((e) => {
+        console.log(e);
+        return res.send(error(CONSTANTS.SQL_ERROR));
+      });
+  } catch (e) {
+    console.log(e);
+    return res.send(error(CONSTANTS.SERVER_ERROR));
+  }
+};

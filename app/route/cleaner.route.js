@@ -9,6 +9,8 @@ router.post("/", validate(cleanerValidator.add), cleaner.create)
 .get("/task-list",cleaner.TaskList)
 
     .get('/all-task',cleaner.findList)
+    .get('/task-by-cleaners',cleaner.TaskListByClearId)
+
     .get("/list", cleaner.cleanerList)
     .put("/:cleanerId", validate(cleanerValidator.update), cleaner.update)
     .delete("/:cleanerId", cleaner.delete)
