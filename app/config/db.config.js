@@ -31,6 +31,8 @@ db.lead = require('../model/lead.model.js')(sequelize, Sequelize)
 db.cleaner = require('../model/cleaner.model.js')(sequelize, Sequelize)
 db.client = require('../model/client.model.js')(sequelize, Sequelize)
 db.task = require('../model/task.model')(sequelize, Sequelize)
+db.work = require('../model/work.model')(sequelize, Sequelize)
+
 db.consumable = require('../model/consumable.model')(sequelize, Sequelize)
 db.supplier = require('../model/supplier.model')(sequelize, Sequelize)
 db.job=require('../model/job.model')(sequelize, Sequelize)

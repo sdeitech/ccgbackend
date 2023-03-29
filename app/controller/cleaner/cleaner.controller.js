@@ -136,6 +136,7 @@ exports.findAll = async (req, res) => {
     if (totalRecords > 0) {
       Cleaner.findAll({
         attributes: [
+          "id",
           "hashcode",
           "name",
           "phone_no",
@@ -630,7 +631,7 @@ exports.createNewTask = async (req, res) => {
 exports.findList = async (req, res) => {
   
   try {
-    console.log(req.query, 'asdada')
+
     const { page = 1, search = '', task_name = '', sort = 'task_name', order = 'DESC', task_status} = req.query;
     const limit = CONSTANTS.PER_PAGE;
     const offset = (page - 1) * limit;
