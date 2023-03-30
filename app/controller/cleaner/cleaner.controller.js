@@ -322,7 +322,7 @@ exports.findById = (req, res) => {
           "updated_by",
         ],
       ],
-      where: { hashcode: id },
+      where: { [Op.or]: [{ hashcode: id }, { id: id }]},
       include: [
         {
           model: Lead,
@@ -538,7 +538,7 @@ exports.updateStatus = (req, res) => {
 
 exports.cleanerList = (req, res) => {
   try {
-    console.log("cleaner list");
+  
     Cleaner.findAll({
       attributes: ["hashcode", "name", "id"],
       where: { is_active: 1 },
