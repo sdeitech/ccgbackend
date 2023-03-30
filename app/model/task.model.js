@@ -62,13 +62,13 @@ module.exports = (sequelize, Sequelize) => {
         },
 
         assign_to: {
-            type: Sequelize.STRING,
+            type: Sequelize.INTEGER,
             notEmpty : true,
             allowNull: false,
             
             validate: {
                 notEmpty: {
-                    msg: "Client ID is required!"
+                    msg: "Cleaner ID is required!"
                 }
             },  
         },
@@ -82,6 +82,18 @@ module.exports = (sequelize, Sequelize) => {
             }
 
         },
+
+        assignee_name:{
+            type    :Sequelize.STRING,
+            validate: {
+                notEmpty: {
+                    msg: "Assignee Name is required"
+                }
+            }
+
+        },
+
+
       
         created_by : {
             type: Sequelize.INTEGER,
