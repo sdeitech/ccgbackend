@@ -57,7 +57,7 @@ exports.findList = async (req, res) => {
 
         const totalRecords = await Job.count({ where });
         const jobs = await Job.findAll({
-            attributes: ['job_id', 'client_name', 'site_address', 'schedule_date', 'cleaning_type', 'cleaner_assign'],
+            attributes: ['job_id', 'client_name', 'site_address', 'schedule_date', 'cleaning_type', 'cleaner_assign',],
             order: [[sort, order]],
             where,
             offset,
