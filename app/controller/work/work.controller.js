@@ -17,13 +17,14 @@ const fs = require("fs");
 exports.createNewWork = async (req, res) => {
   try {
     let parameters = req.body;
+    const cleanerId = req.query.cleanerId;
 
     const randomNumber = Math.floor(Math.random() * 90000) + 10000;
 
     if (parameters) {
       let Created_work = await Work.create({
         lead_id: parameters.lead_id,
-        cleanerId:parameters.cleanerId,
+        cleanerId:cleanerId,
         Job_id: randomNumber,
         client_name: parameters.client_name,
         site_name: parameters.site_name,
